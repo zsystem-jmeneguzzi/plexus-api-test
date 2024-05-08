@@ -25,7 +25,7 @@ class NotificationAppointments extends Command
     protected $description = 'Notificar al cliente 1 hora antes de su cita por Email';
 
     /**
-     * Execute the console command.
+     * Execute the console command. vvvvvvvvvvvv
      */
     public function handle()
     {

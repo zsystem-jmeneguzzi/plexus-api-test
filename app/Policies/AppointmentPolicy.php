@@ -41,9 +41,10 @@ class AppointmentPolicy
                 }
             }else{
                 // EL USUARIO QUE HA REGISTRADO LA CITA MEDICA
-                if($user->id == $appointment->user_id){
-                    return true;
-                }
+                // if($user->id == $appointment->user_id){
+                //     return true;
+                // }
+                return true;
             }
         }
         return false;
