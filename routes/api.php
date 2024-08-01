@@ -89,9 +89,9 @@ Route::group([
     Route::post('ingresos_egresos', [IngresoEgresoController::class, 'store']);
     Route::delete('ingresos_egresos/{id}', [IngresoEgresoController::class, 'destroy']);
 
-    Route::get('carpetas/{id}/ingresos_egresos', [IngresoEgresoController::class, 'index']);
-    Route::post('ingresos_egresos', [IngresoEgresoController::class, 'store']);
 
+    Route::get('in_out', [IngresoEgresoController::class, 'index']);
+    
     // Rutas para Carpetas
 
     // Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);

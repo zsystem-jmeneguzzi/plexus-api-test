@@ -24,6 +24,6 @@ class IngresoEgreso extends Model
 
     public function carpeta()
     {
-        return $this->belongsTo(Carpetas::class);
+        return $this->belongsTo(Carpetas::class, 'carpeta_id', 'id');
     }
 }

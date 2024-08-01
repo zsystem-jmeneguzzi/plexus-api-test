@@ -19,7 +19,7 @@ class Patient extends Model
         "avatar",
         "birth_date",
         "gender",
-        "education",
+        "tramiteDNI",
         "address",
         "antecedent_family",
         "antecedent_personal",

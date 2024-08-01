@@ -173,13 +173,22 @@ class CarpetaController extends Controller
 
     public function getTags($id)
     {
-        $carpeta = Carpetas::find($id);
-        $tags = $carpeta->tags;
+        $carpeta = Carpetas::with('tags')->find($id);
         if (!$carpeta) {
             return response()->json(['message' => 'Carpeta not found'], 404);
         }
-        return response()->json(['tags' => $carpeta->tags]);
+
+        $tags = $carpeta->tags;
+
+        if ($tags === null) {
+            Log::error('Tags es null para la carpeta con ID: ' . $id);
+            return response()->json([]);
+        }
+
+        Log::info('Tags obtenidos:', $tags->toArray()); // Registro de depuración
+        return response()->json($tags); // Ajuste aquí
     }
+
 
 
 
