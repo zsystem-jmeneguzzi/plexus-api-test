@@ -2,15 +2,20 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\IngresoEgresoController;
 use App\Http\Controllers\Admin\Rol\RolesController;
+use App\Http\Controllers\Carpeta\CarpetaController;
 use App\Http\Controllers\Patient\PatientController;
+use App\Http\Controllers\Carpeta\MovimientoCarpetas;
 use App\Http\Controllers\Admin\Staff\StaffsController;
 use App\Http\Controllers\Admin\Doctor\DoctorsController;
 use App\Http\Controllers\Dashboard\DashboardKpiController;
 use App\Http\Controllers\Admin\Doctor\SpecialityController;
 use App\Http\Controllers\Appointment\AppointmentController;
 use App\Http\Controllers\Appointment\AppointmentPayController;
+use App\Http\Controllers\Carpeta\MovimientoCarpetasController;
 use App\Http\Controllers\Appointment\AppointmentAttentionController;
 
 /*
@@ -47,38 +52,62 @@ Route::group([
     'middleware' => 'auth:api',
 ], function ($router) {
     Route::resource("roles",RolesController::class);
-
     Route::get("staffs/config",[StaffsController::class,"config"]);
     Route::post("staffs/{id}",[StaffsController::class,"update"]);
     Route::resource("staffs",StaffsController::class);
-
-    //
     Route::resource("specialities",SpecialityController::class);
-    //
     Route::get("doctors/profile/{id}",[DoctorsController::class,"profile"]);
     Route::get("doctors/config",[DoctorsController::class,"config"]);
     Route::post("doctors/{id}",[DoctorsController::class,"update"]);
     Route::resource("doctors",DoctorsController::class);
-    //
     Route::get("patients/profile/{id}",[PatientController::class,"profile"]);
     Route::post("patients/{id}",[PatientController::class,"update"]);
     Route::resource("patients",PatientController::class);
-    //
     Route::get("appointment/config",[AppointmentController::class,"config"]);
     Route::get("appointment/patient",[AppointmentController::class,"query_patient"]);
     Route::post("appointment/filter",[AppointmentController::class,"filter"]);
     Route::post("appointment/calendar",[AppointmentController::class,"calendar"]);
     Route::resource("appointment",AppointmentController::class);
-    //
     Route::resource("appointment-pay",AppointmentPayController::class);
     Route::resource("appointment-attention",AppointmentAttentionController::class);
-    //
     Route::post("dashboard/admin",[DashboardKpiController::class,"dashboard_admin"]);
     Route::post("dashboard/admin-year",[DashboardKpiController::class,"dashboard_admin_year"]);
-    
     Route::post("dashboard/doctor",[DashboardKpiController::class,"dashboard_doctor"]);
     Route::post("dashboard/doctor-year",[DashboardKpiController::class,"dashboard_doctor_year"]);
     Route::get("dashboard/config",[DashboardKpiController::class,"config"]);
+    Route::get("carpetas/profile/{id}",[CarpetaController::class,"profile"]);
+    Route::post("carpetas/{id}",[CarpetaController::class,"update"]);
+    Route::resource("carpetas",CarpetaController::class);
+    Route::get("carpeta/config",[CarpetaController::class,"config"]);
+    Route::resource("movimiento-carpetas",MovimientoCarpetasController::class);
+    Route::get('movimientos', [MovimientoCarpetasController::class, 'getMovimientos']);
 
+    Route::get('carpetas/{carpeta_id}/archivos', [MovimientoCarpetasController::class, 'getArchivosAdjuntos']);
+    Route::put('/carpeta/{id}/estado', [CarpetaController::class, 'updateEstado']);
+
+    Route::get('carpetas/{id}/ingresos_egresos', [IngresoEgresoController::class, 'index']);
+    Route::post('ingresos_egresos', [IngresoEgresoController::class, 'store']);
+    Route::delete('ingresos_egresos/{id}', [IngresoEgresoController::class, 'destroy']);
+
+    Route::get('carpetas/{id}/ingresos_egresos', [IngresoEgresoController::class, 'index']);
+    Route::post('ingresos_egresos', [IngresoEgresoController::class, 'store']);
+
+    // Rutas para Carpetas
+
+    // Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);
+    // Route::put('carpetas/{id}/tags', [CarpetaController::class, 'updateTags']);
+    // Route::get('carpetas/{id}/archivos', [CarpetaController::class, 'getArchivosAdjuntos']);
+
+
+    Route::get('tags', [TagController::class, 'index']);
+Route::post('tags', [TagController::class, 'store']);
+Route::get('tags/{id}', [TagController::class, 'show']);
+Route::put('tags/{id}', [TagController::class, 'update']);
+Route::delete('tags/{id}', [TagController::class, 'destroy']);
+
+// Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);
+
+Route::put('carpetas/{id}/tags', [CarpetaController::class, 'updateTags']);
+Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);
 
 });

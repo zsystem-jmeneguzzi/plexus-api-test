@@ -67,4 +67,6 @@ class AppointmentResource extends JsonResource
             "created_at" => $this->resource->created_at->format("Y-m-d h:i A"),
         ];
     }
+  
+
 }

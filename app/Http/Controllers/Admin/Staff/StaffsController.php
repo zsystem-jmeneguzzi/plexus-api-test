@@ -30,7 +30,7 @@ class StaffsController extends Controller
                         // ->orWhere("email","like","%".$search."%")
                         ->orderBy("id","desc")
                         ->whereHas("roles",function($q){
-                            $q->where("name","not like","%DOCTOR%");
+                            $q->where("name","not like","%Abogado%");
                         })
                         ->get();
 
@@ -40,7 +40,9 @@ class StaffsController extends Controller
     }
 
     public function config() {
-        $roles = Role::where("name","not like","%DOCTOR%")->get();
+        $roles = Role::where("name","not like","%Abogado%")
+                        ->where("name","not like","%Super-Admin%")
+                        ->get();
 
         return response()->json([
             "roles" => $roles

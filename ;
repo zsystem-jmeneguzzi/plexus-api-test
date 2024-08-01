@@ -1,0 +1,21 @@
+[90m= [39m[34;4mApp\Models\Carpetas\Carpetas[39;24m {#6228
+    [34mid[39m: [35m3[39m,
+    [34mautos[39m: "[32mAutos vs autos3[39m",
+    [34mnro_carpeta[39m: "[32m3[39m",
+    [34mfecha_inicio[39m: "[32m2024-07-23[39m",
+    [34multimo_movimiento[39m: "[32m2024-07-29[39m",
+    [34mtipo_proceso_id[39m: [35m1[39m,
+    [34mestado[39m: [35m1[39m,
+    [34mdescripcion[39m: "[32mDescripcion de prueba 3[39m",
+    [34mabogado_id[39m: [35m57[39m,
+    [34mcontrarios_id[39m: [35m1[39m,
+    [34mtercero_id[39m: [35m1[39m,
+    [34mcliente_id[39m: [36mnull[39m,
+    [34mcreated_at[39m: "[32m2024-07-24 12:14:54[39m",
+    [34mupdated_at[39m: "[32m2024-07-29 15:01:34[39m",
+    [34mdeleted_at[39m: [36mnull[39m,
+    [34mtags[39m: [34;4mIlluminate\Database\Eloquent\Collection[39;24m {#6227
+      [34mall[39m: [],
+    },
+  }
+

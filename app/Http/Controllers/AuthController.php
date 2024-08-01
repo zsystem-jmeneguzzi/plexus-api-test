@@ -54,24 +54,6 @@ class AuthController extends Controller
         return response()->json([
             "message" => 200,
         ]);
-
-        // $validator = Validator::make(request()->all(), [
-        //     'name' => 'required',
-        //     'email' => 'required|email|unique:users',
-        //     'password' => 'required|min:8',
-        // ]);
-
-        // if($validator->fails()){
-        //     return response()->json($validator->errors()->toJson(), 400);
-        // }
-
-        // $user = new User;
-        // $user->name = request()->name;
-        // $user->email = request()->email;
-        // $user->password = bcrypt(request()->password);
-        // $user->save();
-
-        // return response()->json($user, 201);
     }
 
     /**
@@ -147,6 +129,7 @@ class AuthController extends Controller
             "user" => [
                 "name" => auth('api')->user()->name,
                 "surname" => auth('api')->user()->surname,
+                "id" => auth('api')->user()->id,
                 "avatar" => auth('api')->user()->avartar,
                 "email"=> auth('api')->user()->email,
                 "roles" => auth('api')->user()->getRoleNames(),
