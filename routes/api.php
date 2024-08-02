@@ -76,7 +76,7 @@ Route::group([
     Route::post("dashboard/doctor-year",[DashboardKpiController::class,"dashboard_doctor_year"]);
     Route::get("dashboard/config",[DashboardKpiController::class,"config"]);
     Route::get("carpetas/profile/{id}",[CarpetaController::class,"profile"]);
-    Route::post("carpetas/{id}",[CarpetaController::class,"update"]);
+    Route::get('carpetas/{id}', [CarpetaController::class, 'show']);
     Route::resource("carpetas",CarpetaController::class);
     Route::get("carpeta/config",[CarpetaController::class,"config"]);
     Route::resource("movimiento-carpetas",MovimientoCarpetasController::class);
@@ -91,23 +91,23 @@ Route::group([
 
 
     Route::get('in_out', [IngresoEgresoController::class, 'index']);
-    
-    // Rutas para Carpetas
 
-    // Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);
-    // Route::put('carpetas/{id}/tags', [CarpetaController::class, 'updateTags']);
-    // Route::get('carpetas/{id}/archivos', [CarpetaController::class, 'getArchivosAdjuntos']);
 
 
     Route::get('tags', [TagController::class, 'index']);
-Route::post('tags', [TagController::class, 'store']);
-Route::get('tags/{id}', [TagController::class, 'show']);
-Route::put('tags/{id}', [TagController::class, 'update']);
-Route::delete('tags/{id}', [TagController::class, 'destroy']);
+    Route::post('tags', [TagController::class, 'store']);
+    Route::get('tags/{id}', [TagController::class, 'show']);
+    Route::put('tags/{id}', [TagController::class, 'update']);
+    Route::delete('tags/{id}', [TagController::class, 'destroy']);
 
-// Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);
 
-Route::put('carpetas/{id}/tags', [CarpetaController::class, 'updateTags']);
-Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);
+    Route::put('carpetas/{id}/tags', [CarpetaController::class, 'updateTags']);
+    Route::get('carpetas/{id}/tags', [CarpetaController::class, 'getTags']);
+
+    // Agregar la ruta para obtener sugerencias de apellidos
+    Route::get('/patients/surname-suggestions', [PatientController::class, 'getSurnameSuggestions']);
+    Route::get('/patients/document-suggestions', [PatientController::class, 'getDocumentSuggestions']);
+    Route::get('/patients/document-suggestions', [PatientController::class, 'getDocumentSuggestions']);
+
 
 });

@@ -12,9 +12,17 @@ class Carpetas extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'autos', 'nro_carpeta', 'fecha_inicio', 'ultimo_movimiento',
-        'tipo_proceso_id', 'estado', 'descripcion', 'abogado_id',
-        'contrarios_id', 'tercero_id', 'cliente_id'
+        'autos',
+        'cliente_id',
+        'nro_carpeta',
+        'fecha_inicio',
+        'ultimo_movimiento',
+        'tipo_proceso_id',
+        'estado',
+        'descripcion',
+        'abogado_id',
+        'contrarios_id',
+        'tercero_id'
     ];
 
     public function tags()

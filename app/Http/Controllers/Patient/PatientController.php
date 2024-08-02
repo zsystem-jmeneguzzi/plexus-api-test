@@ -15,16 +15,20 @@ class PatientController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', Patient::class);
-        $search = $request->search;
+    $search = $request->search;
 
-        $patients = Patient::where(DB::raw("CONCAT(patients.name,' ',IFNULL(patients.surname,''),' ',patients.email)"), "like", "%" . $search . "%")
-                        ->orderBy("id", "desc")
-                        ->paginate(20);
+    $query = Patient::query();
 
-        return response()->json([
-            "total" => $patients->total(),
-            "patients" => $patients->items()
-        ]);
+    if ($search) {
+        $query->where(DB::raw("CONCAT(patients.name,' ',IFNULL(patients.surname,''),' ',patients.email)"), "like", "%" . $search . "%");
+    }
+
+    $patients = $query->orderBy("id", "desc")->paginate(100);
+
+    return response()->json([
+        "total" => $patients->total(),
+        "patients" => $patients->items()
+    ]);
     }
     public function store(Request $request)
     {
@@ -87,8 +91,6 @@ class PatientController extends Controller
         ]);
     }
 
-
-
     public function destroy($id)
     {
         $this->authorize('delete', Patient::class);
@@ -101,5 +103,17 @@ class PatientController extends Controller
             'message' => 200
         ]);
     }
+
+   public function getDocumentSuggestions(Request $request)
+{
+    $n_document = $request->query('n_document');
+    $patients = Patient::where('n_document', 'like', '%' . $n_document . '%')->limit(10)->get(['name', 'surname', 'n_document']);
+
+    return response()->json([
+        'documents' => $patients
+    ]);
+}
+
+
 
 }

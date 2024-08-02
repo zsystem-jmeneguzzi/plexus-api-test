@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Carpeta\CarpetaResource;
 use App\Http\Resources\Carpeta\CarpetaCollection;
+use App\Models\Carpetas\MovimientoCarpetas;
 
 class CarpetaController extends Controller
 {
@@ -24,8 +25,6 @@ class CarpetaController extends Controller
     {
         $this->authorize('viewAny',Carpetas::class);
         $search = $request->search;
-
-
 
         $carpetas = Carpetas::where(DB::raw("(carpetas.autos)"),"like","%".$search."%")
                         ->orderBy("id","desc")
@@ -62,16 +61,13 @@ class CarpetaController extends Controller
 
         $carpetas = Carpetas::create($request->all());
 
-        // $request->request->add(["patient_id" => $patient->id]);
-        // PatientPerson::create($request->all());
-
         return response()->json([
             "message" => 200
         ]);
     }
 
-    public function config() {
-
+    public function config(Request $request)
+    {
         $n_document = $request->get("n_document");
 
         $patient = Patient::where("n_document",$n_document)->first();
@@ -107,26 +103,26 @@ class CarpetaController extends Controller
         ]);
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        $this->authorize('view',Carpetas::class);
-        $carpetas = Carpetas::findOrFail($id);
+{
+    $this->authorize('view',Carpetas::class);
+    $carpetas = Carpetas::findOrFail($id);
 
-        return response()->json([
-            "carpetas" => CarpetaResource::make($carpetas),
-        ]);
-    }
+    return response()->json([
+        "carpetas" => new CarpetaResource($carpetas), // Asegúrate de usar new para instanciar CarpetaResource
+    ]);
+}
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
-        $carpeta = Carpeta::findOrFail($id);
+        $carpeta = Carpetas::findOrFail($id);
         $carpeta->update($request->all());
         return response()->json($carpeta);
     }
@@ -138,9 +134,6 @@ class CarpetaController extends Controller
     {
         $this->authorize('delete',Carpetas::class);
         $carpetas = Carpetas::findOrFail($id);
-        // if($carpetas->avatar){
-        //     Storage::delete($carpetas->avatar);
-        // }
         $carpetas->delete();
         return response()->json([
             "message" => 200
@@ -149,22 +142,17 @@ class CarpetaController extends Controller
 
     public function updateEstado(Request $request, $id)
     {
-        // Autorizar la acción, si aplicas políticas de autorización
         $this->authorize('update', Carpetas::class);
 
-        // Validar los datos del request
         $request->validate([
             'estado' => 'required|integer',
         ]);
 
-        // Encontrar la carpeta por ID
         $carpeta = Carpetas::findOrFail($id);
 
-        // Actualizar el estado de la carpeta
         $carpeta->estado = $request->estado;
         $carpeta->save();
 
-        // Devolver la respuesta
         return response()->json([
             'message' => 'Estado actualizado exitosamente',
             'carpeta' => new CarpetaResource($carpeta),
@@ -185,12 +173,9 @@ class CarpetaController extends Controller
             return response()->json([]);
         }
 
-        Log::info('Tags obtenidos:', $tags->toArray()); // Registro de depuración
-        return response()->json($tags); // Ajuste aquí
+        Log::info('Tags obtenidos:', $tags->toArray());
+        return response()->json($tags);
     }
-
-
-
 
     public function updateTags(Request $request, $id)
     {
@@ -202,24 +187,29 @@ class CarpetaController extends Controller
         return response()->json(['message' => 'Tags updated successfully']);
     }
 
-
-
     public function getArchivosAdjuntos($carpetaId)
-{
-    $carpeta = Carpetas::find($carpetaId);
+    {
+        $carpeta = Carpetas::find($carpetaId);
 
-    if (!$carpeta) {
-        return response()->json(['error' => 'Carpeta not found'], 404);
+        if (!$carpeta) {
+            return response()->json(['error' => 'Carpeta not found'], 404);
+        }
+
+        $archivos = MovimientoCarpetas::where('carpeta_id', $carpetaId)
+            ->whereNotNull('archivo')
+            ->get(['archivo', 'archivo_nombre']);
+
+        return response()->json(['archivos' => $archivos]);
     }
 
-    $archivos = MovimientoCarpetas::where('carpeta_id', $carpetaId)
-        ->whereNotNull('archivo')
-        ->get(['archivo', 'archivo_nombre']);
+    public function getSurnameSuggestions(Request $request)
+    {
+        $surname = $request->query('surname');
+        $patients = Patient::where('surname', 'like', '%' . $surname . '%')->limit(10)->get(['surname', 'n_document']);
 
-    return response()->json(['archivos' => $archivos]);
+        return response()->json([
+            'surnames' => $patients
+        ]);
+    }
+
 }
-
-
-
-}
-
