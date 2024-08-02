@@ -44,7 +44,8 @@ class MovimientoCarpetasController extends Controller
             $file = $request->file('archivo');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('archivos', $filename);
-            $archivoUrl = env('APP_URL') . '/storage/archivos/' . $filename;
+                // Generar la URL completa del archivo
+                $archivoUrl = env('APP_URL') . 'storage/archivos/' . $filename;
             $archivoNombre = $file->getClientOriginalName();
         }
 
@@ -69,8 +70,6 @@ class MovimientoCarpetasController extends Controller
         ], 500);
     }
 }
-
-
 
 public function show(string $carpeta_id)
 {
