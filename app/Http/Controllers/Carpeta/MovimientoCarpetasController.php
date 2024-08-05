@@ -146,7 +146,7 @@ private function isJson($string)
             $hora_vencimiento = $movimiento->hora_vencimiento;
             if ($hora_vencimiento) {
                 try {
-                    $hora_vencimiento = \Carbon\Carbon::createFromFormat('H:i:s', $hora_vencimiento)->format('H:i');
+                    $hora_vencimiento = Carbon::createFromFormat('H:i:s', $hora_vencimiento)->format('H:i');
                 } catch (\Exception $e) {
                     // Handle the exception if the format is incorrect
                     $hora_vencimiento = null;
