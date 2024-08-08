@@ -18,27 +18,32 @@ use App\Models\Carpetas\MovimientoCarpetas;
 
 class CarpetaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        $this->authorize('viewAny',Carpetas::class);
-        $search = $request->search;
+        $this->authorize('viewAny', Carpetas::class);
 
-        $carpetas = Carpetas::where(DB::raw("(carpetas.autos)"),"like","%".$search."%")
-                        ->orderBy("id","desc")
-                        ->paginate(20);
+        $search = $request->search;
+        $user = auth()->user();
+
+        $query = Carpetas::query();
+
+        if ($user->hasRole('Super-Admin')) {
+            $carpetas = $query->where('autos', 'like', "%{$search}%")
+                              ->orderBy('id', 'desc')
+                              ->paginate(20);
+        } else {
+            $carpetas = $query->where('abogado_id', $user->id)
+                              ->where('autos', 'like', "%{$search}%")
+                              ->orderBy('id', 'desc')
+                              ->paginate(20);
+        }
 
         return response()->json([
-            "total" => $carpetas->total(),
-            "carpetas" => CarpetaCollection::make($carpetas),
+            'total' => $carpetas->total(),
+            'carpetas' => CarpetaCollection::make($carpetas),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $this->authorize('create',Carpetas::class);
@@ -84,7 +89,6 @@ class CarpetaController extends Controller
             "n_document" => $patient->n_document,
         ]);
     }
-
     public function query_patient(Request $request){
         $n_document = $request->get("n_document");
 
@@ -103,43 +107,35 @@ class CarpetaController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
-{
-    $this->authorize('view',Carpetas::class);
-    $carpetas = Carpetas::findOrFail($id);
+    {
+        $carpeta = Carpetas::findOrFail($id);
+        $this->authorize('view', $carpeta);
 
-    return response()->json([
-        "carpetas" => new CarpetaResource($carpetas), // Asegúrate de usar new para instanciar CarpetaResource
-    ]);
-}
+        return response()->json([
+            'carpetas' => CarpetaResource::make($carpeta),
+        ]);
+    }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $carpeta = Carpetas::findOrFail($id);
+        $this->authorize('update', $carpeta);
+
         $carpeta->update($request->all());
         return response()->json($carpeta);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $this->authorize('delete',Carpetas::class);
-        $carpetas = Carpetas::findOrFail($id);
-        $carpetas->delete();
-        return response()->json([
-            "message" => 200
-        ]);
-    }
+public function destroy(string $id)
+{
+    $carpeta = Carpetas::findOrFail($id);
+    $this->authorize('delete', $carpeta);
 
+    $carpeta->delete();
+    return response()->json([
+        'message' => 200,
+    ]);
+}
     public function updateEstado(Request $request, $id)
     {
         $this->authorize('update', Carpetas::class);
@@ -211,5 +207,60 @@ class CarpetaController extends Controller
             'surnames' => $patients
         ]);
     }
+
+    public function filterCarpetas(Request $request)
+{
+    $query = Carpetas::query();
+    $user = auth()->user();
+
+    if ($user->hasRole('Super-Admin')) {
+        // Admin can see all carpetas
+        $query = Carpetas::query();
+    } else {
+        // Abogados can only see their own carpetas
+        $query = Carpetas::where('abogado_id', $user->id);
+    }
+
+    if ($request->estado) {
+        $query->where('carpetas.estado', $request->estado);
+    }
+
+    if ($request->cliente_id) {
+        $query->where('cliente_id', $request->cliente_id);
+    }
+
+    if ($request->tag_id) {
+        $query->whereHas('tags', function ($q) use ($request) {
+            $q->where('tags.id', $request->tag_id);
+        });
+    }
+
+    if ($request->fecha_inicio) {
+        $query->whereDate('fecha_inicio', '>=', $request->fecha_inicio);
+    }
+
+    if ($request->fecha_fin) {
+        $query->whereDate('fecha_inicio', '<=', $request->fecha_fin);
+    }
+
+    if ($request->search) {
+        $query->where(function($query) use ($request) {
+            $query->where('autos', 'LIKE', "%{$request->search}%")
+                  ->orWhere('nro_carpeta', 'LIKE', "%{$request->search}%")
+                  ->orWhereHas('abogado', function ($q) use ($request) {
+                      $q->where('surname', 'LIKE', "%{$request->search}%");
+                  });
+        });
+    }
+
+    $total = $query->count();
+    $carpetas = $query->skip($request->skip)->take($request->limit)->get();
+
+    return response()->json([
+        "total" => $total,
+        "carpetas" => CarpetaCollection::make($carpetas),
+    ]);
+}
+
 
 }

@@ -67,6 +67,17 @@ class PermissionsDemoSeeder extends Seeder
 
         Permission::create(['guard_name' => 'api','name' => 'settings']);
 
+        Permission::create(['guard_name' => 'api','name' => 'carpeta_List']);
+        Permission::create(['guard_name' => 'api','name' => 'carpeta_View']);
+        Permission::create(['guard_name' => 'api','name' => 'carpeta_Edit']);
+        Permission::create(['guard_name' => 'api','name' => 'carpeta_Create']);
+
+        Permission::create(['guard_name' => 'api','name' => 'resumen_List']);
+        Permission::create(['guard_name' => 'api','name' => 'resumen_Create']);
+        Permission::create(['guard_name' => 'api','name' => 'resumen_Update']);
+        Permission::create(['guard_name' => 'api','name' => 'resumen_Delete']);
+        Permission::create(['guard_name' => 'api','name' => 'income_expense_summary']);
+
 
         // create roles and assign existing permissions
         // $role1 = Role::create(['guard_name' => 'api','name' => 'writer']);
@@ -78,6 +89,11 @@ class PermissionsDemoSeeder extends Seeder
         // $role2->givePermissionTo('unpublish articles');
 
         $role3 = Role::create(['guard_name' => 'api','name' => 'Super-Admin']);
+        $role = Role::findByName('Abogado');
+        $role->givePermissionTo('carpeta_List');
+        $role->givePermissionTo('carpeta_View');
+        $role->givePermissionTo('carpeta_Edit');
+        $role->givePermissionTo('carpeta_Create');
         // gets all permissions via Gate::before rule; see AuthServiceProvider
 
         // create demo users

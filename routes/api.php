@@ -109,5 +109,6 @@ Route::group([
     Route::get('/patients/document-suggestions', [PatientController::class, 'getDocumentSuggestions']);
     Route::get('/patients/document-suggestions', [PatientController::class, 'getDocumentSuggestions']);
 
+    Route::post('/carpetas/filter', [CarpetaController::class, 'filterCarpetas']);
 
 });

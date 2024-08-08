@@ -7,9 +7,11 @@ use App\Models\Carpetas\Carpetas;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use Spatie\Permission\Traits\HasRoles;
+
 class IngresoEgreso extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRoles;
 
     protected $table = 'ingresos_egresos';
 

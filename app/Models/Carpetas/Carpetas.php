@@ -1,8 +1,10 @@
 <?php
 // App\Models\Carpetas\Carpetas.php
+
 namespace App\Models\Carpetas;
 
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,4 +31,14 @@ class Carpetas extends Model
     {
         return $this->belongsToMany(Tag::class, 'carpeta_tag', 'carpeta_id', 'tag_id');
     }
+    public function abogado()
+    {
+        return $this->belongsTo(User::class, 'abogado_id');
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+    
 }

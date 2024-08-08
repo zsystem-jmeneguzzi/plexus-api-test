@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +14,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Permission::firstOrCreate(['name' => 'carpeta_List', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'carpeta_Create', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'carpeta_Update', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'carpeta_Delete', 'guard_name' => 'api']);
+
+         $role = Role::firstOrCreate(['name' => 'Abogado', 'guard_name' => 'api']);
+         $permissions = [
+            'carpeta_List',
+            'carpeta_Create',
+            'carpeta_Update',
+            'carpeta_Delete',
+            'resumen_List', // Nuevo permiso
+            'resumen_Create', // Nuevo permiso
+            'resumen_Update', // Nuevo permiso
+            'resumen_Delete', // Nuevo permiso
+            'income_expense_summary'
+        ];
+        foreach ($permissions as $permission) {
+            $perm = Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
+            $role->givePermissionTo($perm);
+        }
+        $role = Role::firstOrCreate(['name' => 'Abogado', 'guard_name' => 'api']);
+         $role->givePermissionTo(['carpeta_List', 'carpeta_Create', 'carpeta_Update', 'carpeta_Delete']);
+
     }
 }
