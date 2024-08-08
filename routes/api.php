@@ -111,4 +111,7 @@ Route::group([
 
     Route::post('/carpetas/filter', [CarpetaController::class, 'filterCarpetas']);
 
+    Route::post('ingresos-egresos/{deudaId}/pay', [IngresoEgresoController::class, 'payDebt']);
+
+
 });

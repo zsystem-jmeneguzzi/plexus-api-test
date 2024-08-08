@@ -1,13 +1,12 @@
 <?php
 
-// app/Models/IngresoEgreso.php
 namespace App\Models;
 
+use App\Models\Patient\Patient;
 use App\Models\Carpetas\Carpetas;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-use Spatie\Permission\Traits\HasRoles;
 
 class IngresoEgreso extends Model
 {
@@ -21,11 +20,17 @@ class IngresoEgreso extends Model
         'concepto',
         'monto',
         'tipo',
-        'fecha'
+        'fecha',
+        'patient_id'
     ];
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class, 'patient_id', 'id');
+    }
 
     public function carpeta()
     {
-        return $this->belongsTo(Carpetas::class, 'carpeta_id', 'id');
+        return $this->belongsTo(Carpetas::class, 'carpeta_id');
     }
 }

@@ -1,10 +1,9 @@
 <?php
-// app/Http/Controllers/IngresoEgresoController.php
 namespace App\Http\Controllers;
 
 use App\Models\IngresoEgreso;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class IngresoEgresoController extends Controller
 {
@@ -13,9 +12,9 @@ class IngresoEgresoController extends Controller
         $this->authorize('viewAny', IngresoEgreso::class);
 
         if ($carpeta_id) {
-            $ingresosEgresos = IngresoEgreso::where('carpeta_id', $carpeta_id)->get();
+            $ingresosEgresos = IngresoEgreso::where('carpeta_id', $carpeta_id)->with('carpeta')->get();
         } else {
-            $ingresosEgresos = IngresoEgreso::all();
+            $ingresosEgresos = IngresoEgreso::with('carpeta')->get();
         }
 
         $ingresosEgresos = $ingresosEgresos->map(function ($item) {
@@ -24,7 +23,7 @@ class IngresoEgresoController extends Controller
                 'monto' => $item->monto,
                 'tipo' => $item->tipo,
                 'fecha' => $item->fecha,
-                'autos' => $item->carpeta ? $item->carpeta->autos : null,
+                'autos' => $item->carpeta ? $item->carpeta->autos : 'N/A',
                 'concepto' => $item->concepto,
             ];
         });
@@ -39,34 +38,24 @@ class IngresoEgresoController extends Controller
         $validator = Validator::make($request->all(), [
             'concepto' => 'required|string|max:255',
             'monto' => 'required|numeric',
-            'tipo' => 'required|in:ingreso,egreso',
+            'tipo' => 'required|in:ingreso,egreso,deuda',
+            'patient_id' => 'required_if:tipo,deuda|nullable|exists:patients,id'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $carpetaId = $request->input('carpeta_id', 1);
-
         $ingresoEgreso = IngresoEgreso::create([
-            'carpeta_id' => $carpetaId,
+            'carpeta_id' => $request->input('carpeta_id'),
             'user_id' => auth('api')->user()->id,
             'concepto' => $request->input('concepto'),
             'monto' => $request->input('monto'),
             'tipo' => $request->input('tipo'),
             'fecha' => now(),
+            'patient_id' => $request->input('patient_id') // Esto puede ser nulo si no es deuda
         ]);
 
         return response()->json($ingresoEgreso, 201);
     }
-
-    public function destroy($id)
-    {
-        $ingresoEgreso = IngresoEgreso::findOrFail($id);
-        $this->authorize('delete', $ingresoEgreso);
-
-        $ingresoEgreso->delete();
-        return response()->json(null, 204);
-    }
 }
-

@@ -10,16 +10,18 @@ class CreateIngresosEgresosTable extends Migration
     {
         Schema::create('ingresos_egresos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('carpeta_id');
+            $table->unsignedBigInteger('carpeta_id')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('patient_id')->nullable();  // Cambiado de cliente_id a patient_id
             $table->string('concepto');
-            $table->decimal('monto', 8, 2);
-            $table->enum('tipo', ['ingreso', 'egreso']);
+            $table->decimal('monto', 10, 2);
+            $table->enum('tipo', ['ingreso', 'egreso', 'deuda']);
             $table->date('fecha');
             $table->timestamps();
 
             $table->foreign('carpeta_id')->references('id')->on('carpetas')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');  // Cambiado de cliente_id a patient_id
         });
     }
 
@@ -28,3 +30,4 @@ class CreateIngresosEgresosTable extends Migration
         Schema::dropIfExists('ingresos_egresos');
     }
 }
+
