@@ -5,9 +5,10 @@ namespace App\Models\Carpetas;
 
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Patient\Patient;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Carpetas extends Model
 {
@@ -38,7 +39,7 @@ class Carpetas extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(Patient::class, 'cliente_id');
     }
-    
+
 }

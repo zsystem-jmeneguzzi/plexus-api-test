@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\IngresoEgreso;
 use Illuminate\Http\Request;
+use App\Models\IngresoEgreso;
+use App\Models\Carpetas\Carpetas;
 use Illuminate\Support\Facades\Validator;
 
 class IngresoEgresoController extends Controller
@@ -34,7 +35,7 @@ class IngresoEgresoController extends Controller
 
     public function show($id)
     {
-        $carpeta = Carpeta::find($id);
+        $carpeta = Carpetas::find($id);
 
         // Verifica si la carpeta está asignada al abogado logueado
         if ($carpeta->abogado_id !== auth()->user()->id) {

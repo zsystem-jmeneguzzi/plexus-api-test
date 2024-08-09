@@ -138,13 +138,12 @@ public function destroy(string $id)
 }
     public function updateEstado(Request $request, $id)
     {
-        $this->authorize('update', Carpetas::class);
+        $carpeta = Carpetas::findOrFail($id);
+        $this->authorize('update', $carpeta); // Pasa la carpeta aquí
 
         $request->validate([
             'estado' => 'required|integer',
         ]);
-
-        $carpeta = Carpetas::findOrFail($id);
 
         $carpeta->estado = $request->estado;
         $carpeta->save();
@@ -154,6 +153,7 @@ public function destroy(string $id)
             'carpeta' => new CarpetaResource($carpeta),
         ]);
     }
+
 
     public function getTags($id)
     {
