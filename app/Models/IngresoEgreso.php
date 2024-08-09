@@ -28,6 +28,19 @@ class IngresoEgreso extends Model
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
+    public function show($id)
+    {
+        $carpeta = Carpetas::find($id);
+
+        // Verifica si la carpeta está asignada al abogado logueado
+        if ($carpeta->abogado_id !== auth()->user()->id) {
+            return response()->json(['error' => 'No es posible acceder porque esta carpeta está asignada a otro abogado.'], 403);
+        }
+
+        return response()->json($carpeta);
+    }
+
+
 
     public function carpeta()
     {

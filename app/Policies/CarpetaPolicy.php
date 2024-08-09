@@ -28,8 +28,9 @@ class CarpetaPolicy
 
     public function update(User $user, Carpetas $carpeta)
     {
-        return $user->hasRole('Super-Admin') || $user->id === $carpeta->abogado_id;
+        return $user->hasRole('Super-Admin') || $user->can('carpeta_update');
     }
+
 
     public function delete(User $user, Carpetas $carpeta)
     {
